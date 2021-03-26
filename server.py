@@ -2,7 +2,7 @@ import socket
 import threading
 import time
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind(('', 5000))
 
@@ -13,6 +13,7 @@ def factorial(num):
     return res
 
 print("Initiating server")
+'''
 while True:
     server.listen()
     conn_obj, client_addr = server.accept()
@@ -35,3 +36,18 @@ while True:
     print("Connection closed by "+str(client_addr))
     conn_obj.send("Connection Closed".encode(format))
     conn_obj.close()
+'''
+while True:
+    format = 'utf-8'
+    msg_len, client_addr = server.recvfrom(64)
+    msg_len = msg_len.decode(format)
+    if msg_len:
+        msg_len = int(msg_len)
+        msg, client_addr = server.recvfrom(msg_len)
+        msg = msg.decode(format)
+        try:
+            res = factorial(int(msg))
+        except ValueError:
+            res = 'Please send a number to calculate factorial'
+        print("Received "+msg+" from "+str(client_addr))
+        server.sendto(str(res).encode(format),client_addr)
