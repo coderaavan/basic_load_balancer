@@ -50,4 +50,7 @@ while True:
         except ValueError:
             res = 'Please send a number to calculate factorial'
         print("Received "+msg+" from "+str(client_addr))
-        server.sendto(str(res).encode(format),client_addr)
+        try:
+            server.sendto(str(res).encode(format),client_addr)
+        except OSError:
+            server.sendto("Value too long to print".encode(format),client_addr)
