@@ -12,31 +12,6 @@ def factorial(num):
         res*=i
     return res
 
-print("Initiating server")
-'''
-while True:
-    server.listen()
-    conn_obj, client_addr = server.accept()
-    print(str(client_addr) +" connected")
-    format = 'utf-8'
-    while True:
-        msg_len = conn_obj.recv(64).decode(format)
-        if msg_len:
-            msg_len = int(msg_len)
-            msg = conn_obj.recv(msg_len).decode(format)
-            if msg == "##close_connection##":
-                break
-            try:
-                res = factorial(int(msg))
-            except ValueError:
-                res = 'Please send a number to calculate factorial'
-            print("Received "+msg+" from "+str(client_addr))
-            conn_obj.send(str(res).encode(format))
-
-    print("Connection closed by "+str(client_addr))
-    conn_obj.send("Connection Closed".encode(format))
-    conn_obj.close()
-'''
 while True:
     format = 'utf-8'
     msg_len, client_addr = server.recvfrom(64)
@@ -45,12 +20,4 @@ while True:
         msg_len = int(msg_len)
         msg, client_addr = server.recvfrom(msg_len)
         msg = msg.decode(format)
-        try:
-            res = factorial(int(msg))
-        except ValueError:
-            res = 'Please send a number to calculate factorial'
-        print("Received "+msg+" from "+str(client_addr))
-        try:
-            server.sendto(str(res).encode(format),client_addr)
-        except OSError:
-            server.sendto("Value too long to print".encode(format),client_addr)
+        res = factorial(int(msg))
